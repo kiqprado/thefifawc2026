@@ -85,7 +85,7 @@ const Edition2026Section = () => {
                 className="group block bg-gradient-card border border-border rounded-lg p-8 shadow-card hover:shadow-gold hover:border-primary/40 transition-all duration-300"
               >
                 <card.icon className={`w-10 h-10 ${card.color} mb-4 group-hover:scale-110 transition-transform`} />
-                <h3 className="font-display text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <h3 className="font-display text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors text-left">
                   {card.title}
                 </h3>
                 <p className="font-body text-muted-foreground text-sm">
