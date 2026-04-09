@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const stats = [
   { value: "22", label: "Edições realizadas" },
@@ -68,6 +70,21 @@ const HistorySection = () => {
               <p className="font-body text-foreground/80 pb-8">{m.event}</p>
             </motion.div>
           ))}
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center"
+          >
+            <Link
+              to="/historia"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-display font-bold text-lg hover:scale-105 transition-transform shadow-lg shadow-primary/30"
+            >
+              Conheça mais da história nas Copas
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>
