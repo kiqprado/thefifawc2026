@@ -1,9 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { groups } from "@/data/groups";
+import { useEffect, useRef } from "react";
 
 const Grupos = () => {
+  const [searchParams] = useSearchParams();
+  const highlightTeam = searchParams.get("team");
+  const highlightRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (highlightRef.current) {
+      setTimeout(() => {
+        highlightRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
+    }
+  }, [highlightTeam]);
+
+  // Find which group the team belongs to
+  const highlightGroup = highlightTeam
+    ? groups.find((g) => g.teams.some((t) => t.name === highlightTeam))?.letter
+    : null;
+
   return (
     <main className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-6">
@@ -22,42 +40,57 @@ const Grupos = () => {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {groups.map((group, gi) => (
-            <motion.div
-              key={group.letter}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: gi * 0.06 }}
-              className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
-            >
-              {/* Group header */}
-              <div className="bg-secondary px-5 py-3 border-b border-border">
-                <h2 className="font-display text-2xl font-bold text-primary tracking-wide">
-                  Grupo {group.letter}
-                </h2>
-              </div>
+          {groups.map((group, gi) => {
+            const isHighlighted = highlightGroup === group.letter;
+            return (
+              <motion.div
+                key={group.letter}
+                ref={isHighlighted ? highlightRef : undefined}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: gi * 0.06 }}
+                className={`bg-card border rounded-xl overflow-hidden transition-all duration-500 ${
+                  isHighlighted
+                    ? "border-primary shadow-lg shadow-primary/20 ring-2 ring-primary/30"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className={`px-5 py-3 border-b ${isHighlighted ? "bg-primary/10 border-primary/30" : "bg-secondary border-border"}`}>
+                  <h2 className="font-display text-2xl font-bold text-primary tracking-wide">
+                    Grupo {group.letter}
+                  </h2>
+                </div>
 
-              {/* Teams */}
-              <ul className="divide-y divide-border">
-                {group.teams.map((team, ti) => (
-                  <li
-                    key={team.name}
-                    className="flex items-center gap-4 px-5 py-4 hover:bg-secondary/50 transition-colors"
-                  >
-                    <span className="text-4xl leading-none">{team.flag}</span>
-                    <div>
-                      <span className="font-body text-xs text-muted-foreground">
-                        {ti + 1}º
-                      </span>
-                      <p className="font-display text-lg font-semibold text-foreground leading-tight">
-                        {team.name}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
+                <ul className="divide-y divide-border">
+                  {group.teams.map((team, ti) => {
+                    const isTeamHighlighted = highlightTeam === team.name;
+                    return (
+                      <li
+                        key={team.name}
+                        className={`flex items-center gap-4 px-5 py-4 transition-colors ${
+                          isTeamHighlighted
+                            ? "bg-primary/10 border-l-4 border-l-primary"
+                            : "hover:bg-secondary/50"
+                        }`}
+                      >
+                        <span className="text-4xl leading-none">{team.flag}</span>
+                        <div>
+                          <span className="font-body text-xs text-muted-foreground">
+                            {ti + 1}º
+                          </span>
+                          <p className={`font-display text-lg font-semibold leading-tight ${
+                            isTeamHighlighted ? "text-primary" : "text-foreground"
+                          }`}>
+                            {team.name}
+                          </p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </main>
