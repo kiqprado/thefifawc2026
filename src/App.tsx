@@ -8,6 +8,7 @@ import Times from "./pages/Times.tsx";
 import Grupos from "./pages/Grupos.tsx";
 import Partidas from "./pages/Partidas.tsx";
 import HistoriaCopas from "./pages/HistoriaCopas.tsx";
+import Escalacao from "./pages/Escalacao.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/grupos" element={<Grupos />} />
           <Route path="/partidas" element={<Partidas />} />
           <Route path="/historia" element={<HistoriaCopas />} />
+          <Route path="/escalacao/:code" element={<Escalacao />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
