@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import HistorySection from "@/components/HistorySection";
 import Edition2026Section from "@/components/Edition2026Section";
+import StarsSection from "@/components/StarsSection";
 import StadiumsSection from "@/components/StadiumsSection";
 
 const Index = () => {
@@ -9,6 +10,7 @@ const Index = () => {
       <HeroSection />
       <HistorySection />
       <Edition2026Section />
+      <StarsSection />
       <StadiumsSection />
       <footer className="py-8 text-center border-t border-border">
         <p className="font-body text-sm text-muted-foreground">
