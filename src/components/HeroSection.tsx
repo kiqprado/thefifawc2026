@@ -1,7 +1,24 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 
+const navItems = [
+  { label: "Seleções", to: "/times" },
+  { label: "Grupos", to: "/grupos" },
+  { label: "Partidas", to: "/partidas" },
+  { label: "História", to: "#history" },
+  { label: "Estrelas", to: "#stars" },
+  { label: "Estádios", to: "#stadiums" },
+];
+
 const HeroSection = () => {
+  const handleNav = (to: string) => {
+    if (to.startsWith("#")) {
+      const el = document.querySelector(to);
+      el?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <img
@@ -12,7 +29,41 @@ const HeroSection = () => {
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-hero" />
-      
+
+      {/* Navigation */}
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        className="absolute top-0 left-0 right-0 z-20 py-5"
+      >
+        <div className="container mx-auto px-6 flex items-center justify-center">
+          <ul className="flex flex-wrap items-center justify-center gap-2 md:gap-1">
+            {navItems.map((item) =>
+              item.to.startsWith("#") ? (
+                <li key={item.label}>
+                  <button
+                    onClick={() => handleNav(item.to)}
+                    className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ) : (
+                <li key={item.label}>
+                  <Link
+                    to={item.to}
+                    className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+      </motion.nav>
+
       <div className="relative z-10 container mx-auto px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -22,7 +73,7 @@ const HeroSection = () => {
         >
           A maior competição do planeta
         </motion.p>
-        
+
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
