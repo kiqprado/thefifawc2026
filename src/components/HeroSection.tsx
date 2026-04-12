@@ -1,22 +1,29 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 
 const navItems = [
   { label: "Seleções", to: "/times" },
   { label: "Grupos", to: "/grupos" },
   { label: "Partidas", to: "/partidas" },
-  { label: "História", to: "#history" },
+  { label: "História", to: "/historia" },
   { label: "Estrelas", to: "#stars" },
   { label: "Estádios", to: "#stadiums" },
 ];
 
 const HeroSection = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+
   const handleNav = (to: string) => {
     if (to.startsWith("#")) {
       const el = document.querySelector(to);
       el?.scrollIntoView({ behavior: "smooth" });
     }
+    setMenuOpen(false);
   };
 
   return (
@@ -36,32 +43,95 @@ const HeroSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.6 }}
         className="absolute top-0 left-0 right-0 z-20 py-5"
+        aria-label="Navegação principal"
       >
-        <div className="container mx-auto px-6 flex items-center justify-center">
-          <ul className="flex flex-wrap items-center justify-center gap-2 md:gap-1">
-            {navItems.map((item) =>
-              item.to.startsWith("#") ? (
-                <li key={item.label}>
-                  <button
-                    onClick={() => handleNav(item.to)}
-                    className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase"
-                  >
-                    {item.label}
-                  </button>
+        <div className="container mx-auto px-6 flex items-center justify-center md:justify-center">
+          {/* Mobile hamburger */}
+          {isMobile && (
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-sm border border-primary/20"
+              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          )}
+
+          {/* Desktop nav */}
+          {!isMobile && (
+            <ul className="flex flex-wrap items-center justify-center gap-1" role="menubar">
+              {navItems.map((item) => (
+                <li key={item.label} role="none">
+                  {item.to.startsWith("#") ? (
+                    <button
+                      role="menuitem"
+                      onClick={() => handleNav(item.to)}
+                      className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <Link
+                      role="menuitem"
+                      to={item.to}
+                      className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
-              ) : (
-                <li key={item.label}>
-                  <Link
-                    to={item.to}
-                    className="font-display text-xs md:text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-4 py-2 rounded-sm transition-all uppercase"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              )
-            )}
-          </ul>
+              ))}
+            </ul>
+          )}
         </div>
+
+        {/* Mobile dropdown */}
+        <AnimatePresence>
+          {isMobile && menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <ul
+                className="flex flex-col items-center gap-1 py-4 bg-background/80 backdrop-blur-md border-t border-border/30 mt-2"
+                role="menu"
+              >
+                {navItems.map((item, i) => (
+                  <motion.li
+                    key={item.label}
+                    role="none"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    {item.to.startsWith("#") ? (
+                      <button
+                        role="menuitem"
+                        onClick={() => handleNav(item.to)}
+                        className="font-display text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-6 py-3 rounded-sm transition-all uppercase w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <Link
+                        role="menuitem"
+                        to={item.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="font-display text-sm tracking-widest text-muted-foreground hover:text-primary border border-transparent hover:border-primary/30 px-6 py-3 rounded-sm transition-all uppercase block focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.nav>
 
       <div className="relative z-10 container mx-auto px-6 text-center">
