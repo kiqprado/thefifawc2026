@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Users, LayoutGrid, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { teams } from "@/data/teams";
 import { getTeamGroup } from "@/data/squads";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const Times = () => {
+  const [search, setSearch] = useState("");
+
+  const filteredTeams = teams.filter((team) =>
+    team.name.toLowerCase().includes(search.toLowerCase()) ||
+    team.code.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <main className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-6">
@@ -19,9 +28,25 @@ const Times = () => {
         >
           Seleções
         </motion.h1>
-        <p className="font-body text-muted-foreground text-lg max-w-2xl mb-12">
+        <p className="font-body text-muted-foreground text-lg max-w-2xl mb-8">
           48 seleções classificadas para a Copa do Mundo 2026. Conheça a história de cada uma nas Copas.
         </p>
+
+        <div className="relative max-w-md mb-10">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar seleção por nome ou código..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 bg-card border-border focus-visible:ring-primary"
+          />
+        </div>
+
+        {filteredTeams.length === 0 && (
+          <p className="font-body text-muted-foreground text-center py-12">
+            Nenhuma seleção encontrada para "{search}"
+          </p>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {teams.map((team, index) => {
