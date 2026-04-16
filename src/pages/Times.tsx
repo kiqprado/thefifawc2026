@@ -49,7 +49,7 @@ const Times = () => {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {teams.map((team, index) => {
+          {filteredTeams.map((team, index) => {
             const groupLetter = getTeamGroup(team.name);
             return (
               <motion.div
